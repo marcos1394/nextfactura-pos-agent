@@ -1,0 +1,29 @@
+{
+  "name": "nextmanager-pos-agent",
+  "version": "1.0.0",
+  "description": "Agente de sincronización para conectar el POS SoftRestaurant con la plataforma NextManager.",
+  "main": "src/main.js",
+  "scripts": {
+    "start": "electron .",
+    "package": "electron-builder"
+  },
+  "author": "Marcos Sandoval",
+  "license": "ISC",
+  "devDependencies": {
+    "electron": "^31.0.2",
+    "electron-builder": "^24.13.3"
+  },
+  "dependencies": {
+    "electron-store": "^8.2.0",
+    "mssql": "^10.0.2",
+    "node-fetch": "^2.7.0"
+  },
+  "build": {
+    "appId": "com.nextmanager.pos-agent",
+    "productName": "NextManager POS Agent",
+    "win": {
+      "target": "nsis",
+      "icon": "src/assets/icon.png"
+    }
+  }
+}

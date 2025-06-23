@@ -5,6 +5,8 @@ const path = require('path');
 const Store = require('electron-store');
 const fetch = require('node-fetch');
 const sql = require('mssql');
+const fs = require('fs').promises; // Usamos fs.promises para I/O asíncrono
+
 
 const store = new Store();
 
@@ -121,6 +123,45 @@ async function processTask(task, apiKey) {
         }).catch(err => logToUI('error', `Fallo al enviar resultado: ${err.message}`));
     }
 }
+
+// --- NUEVO: Lógica de Autodetección ---
+async function autoDetectPosConfig() {
+    // Esta función busca en rutas comunes el archivo de configuración de SoftRestaurant.
+    // La ruta exacta puede variar según la versión del software.
+    const commonPaths = [
+        'C:/Program Files (x86)/SoftRestaurant/SoftRestaurant10.0/sr.config',
+        'C:/Program Files (x86)/SoftRestaurant/SoftRestaurant9.5/sr.config',
+        'C:/SoftRestaurant/sr.config'
+    ];
+
+    for (const configPath of commonPaths) {
+        try {
+            await fs.access(configPath); // Verifica si el archivo existe
+            logToUI('info', `Archivo de configuración encontrado en: ${configPath}`);
+            const fileContent = await fs.readFile(configPath, 'utf8');
+            
+            // Lógica para parsear el archivo de configuración (puede ser XML, INI, etc.)
+            // Esto es un EJEMPLO para un formato tipo "KEY=VALUE"
+            const config = {};
+            const lines = fileContent.split('\n');
+            lines.forEach(line => {
+                if (line.includes('DataSource')) config.server = line.split('=')[1].trim();
+                if (line.includes('InitialCatalog')) config.database = line.split('=')[1].trim();
+                if (line.includes('UserID')) config.user = line.split('=')[1].trim();
+            });
+
+            if (config.server && config.database && config.user) {
+                return { success: true, config };
+            }
+
+        } catch (error) {
+            // El archivo no existe en esta ruta, continúa con la siguiente.
+        }
+    }
+    // Si el bucle termina sin encontrar nada
+    return { success: false, error: 'No se encontró el archivo de configuración de SoftRestaurant.' };
+}
+
 
 // --- IPC Handlers ---
 

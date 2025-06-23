@@ -3,31 +3,59 @@
 <head>
     <meta charset="UTF-8">
     <title>NextManager POS Agent</title>
-    <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';">
+    <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com;">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">
-        <header>
-            <img src="../assets/icon.png" alt="Logo" class="logo">
-            <h1>Agente de Sincronización NextManager</h1>
-            <div class="status-indicator" id="status-indicator">
-                <span class="status-light grey"></span>
-                <span id="status-text">Desconectado</span>
+        <header class="title-bar">
+            <div class="title-bar-logo">
+                <img src="../assets/icon.png" alt="Logo" class="logo">
+                <h1>NextManager POS Agent</h1>
             </div>
         </header>
+        
+        <div class="status-banner">
+            <div class="status-indicator" id="status-indicator">
+                <span class="status-light grey" id="status-light"></span>
+                <span id="status-text">Inicializando...</span>
+            </div>
+        </div>
 
-        <main>
-            <div class="config-section">
+        <main class="content">
+            <div class="config-panel">
                 <h2>Configuración</h2>
-                <div class="input-group">
-                    <label for="api-key">Clave de Enlace (API Key)</label>
-                    <input type="password" id="api-key" placeholder="Pega la clave de enlace aquí...">
+                <div class="form-section">
+                    <h3>Plataforma NextManager</h3>
+                    <div class="input-group">
+                        <label for="api-key">Clave de Enlace (API Key)</label>
+                        <input type="password" id="api-key" placeholder="Pega la clave de enlace aquí...">
+                    </div>
                 </div>
-                <button id="save-btn">Guardar y Conectar</button>
+                <div class="form-section">
+                    <h3>Base de Datos SoftRestaurant</h3>
+                    <div class="input-group">
+                        <label for="pos-server">Servidor (Host o IP)</label>
+                        <input type="text" id="pos-server" placeholder="ej. 192.168.1.100 o localhost">
+                    </div>
+                    <div class="input-group">
+                        <label for="pos-db">Nombre de la Base de Datos</label>
+                        <input type="text" id="pos-db" placeholder="ej. softrestaurant8_pventa">
+                    </div>
+                    <div class="input-group">
+                        <label for="pos-user">Usuario</label>
+                        <input type="text" id="pos-user" placeholder="ej. sa">
+                    </div>
+                    <div class="input-group">
+                        <label for="pos-pass">Contraseña</label>
+                        <input type="password" id="pos-pass">
+                    </div>
+                    <button id="test-btn" class="secondary-btn">Probar Conexión</button>
+                </div>
+                <button id="save-btn" class="primary-btn">Guardar y Conectar</button>
             </div>
 
-            <div class="logs-section">
+            <div class="logs-panel">
                 <h2>Registro de Actividad</h2>
                 <div id="logs-container" class="logs-container"></div>
             </div>

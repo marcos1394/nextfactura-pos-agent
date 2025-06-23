@@ -1,0 +1,189 @@
+/* src/renderer/style.css */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+    --bg-dark: #1a1b1e;
+    --bg-light: #2c2d30;
+    --border-color: #424346;
+    --text-primary: #e0e0e0;
+    --text-secondary: #a0a0a0;
+    --accent-blue: #3a7cff;
+    --accent-green: #34d399;
+    --accent-yellow: #f59e0b;
+    --accent-red: #ef4444;
+}
+
+/* ... (estilos completos para una UI profesional y moderna) ... */
+body, html {
+    font-family: 'Inter', sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: var(--bg-dark);
+    color: var(--text-primary);
+    height: 100vh;
+    overflow: hidden;
+}
+
+.container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+}
+
+.title-bar {
+    -webkit-app-region: drag;
+    padding: 12px 16px;
+    background-color: var(--bg-light);
+    border-bottom: 1px solid var(--border-color);
+}
+
+.title-bar-logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.logo {
+    width: 24px;
+    height: 24px;
+}
+
+h1 {
+    font-size: 16px;
+    font-weight: 600;
+    margin: 0;
+}
+
+.status-banner {
+    padding: 12px 24px;
+    background-color: var(--bg-light);
+    border-bottom: 1px solid var(--border-color);
+    display: flex;
+    justify-content: flex-end;
+}
+
+.status-indicator {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 500;
+}
+
+.status-light {
+    width: 12px;
+    height: 12px;
+    border-radius: 50%;
+    transition: background-color 0.3s ease;
+}
+
+.status-light.grey { background-color: #6b7280; }
+.status-light.green { background-color: var(--accent-green); box-shadow: 0 0 8px var(--accent-green); }
+.status-light.yellow { background-color: var(--accent-yellow); box-shadow: 0 0 8px var(--accent-yellow); }
+.status-light.red { background-color: var(--accent-red); box-shadow: 0 0 8px var(--accent-red); }
+
+.content {
+    display: grid;
+    grid-template-columns: 350px 1fr;
+    flex-grow: 1;
+    height: calc(100% - 100px); /* Ajustar según altura de header y banner */
+}
+
+.config-panel, .logs-panel {
+    padding: 24px;
+    overflow-y: auto;
+}
+
+.config-panel {
+    background-color: var(--bg-light);
+    border-right: 1px solid var(--border-color);
+}
+
+h2 {
+    font-size: 18px;
+    font-weight: 600;
+    margin-top: 0;
+    margin-bottom: 24px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.form-section {
+    margin-bottom: 32px;
+}
+
+h3 {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-bottom: 16px;
+    text-transform: uppercase;
+}
+
+.input-group {
+    margin-bottom: 16px;
+}
+
+label {
+    display: block;
+    font-size: 14px;
+    font-weight: 500;
+    margin-bottom: 8px;
+}
+
+input[type="text"], input[type="password"] {
+    width: 100%;
+    padding: 10px;
+    background-color: var(--bg-dark);
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    color: var(--text-primary);
+    font-size: 14px;
+    box-sizing: border-box;
+}
+
+input:focus {
+    outline: none;
+    border-color: var(--accent-blue);
+}
+
+button {
+    padding: 10px 16px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.primary-btn {
+    background-color: var(--accent-blue);
+    color: white;
+    width: 100%;
+}
+.primary-btn:hover { background-color: #4b89ff; }
+
+.secondary-btn {
+    background-color: var(--bg-light);
+    color: var(--text-primary);
+    border: 1px solid var(--border-color);
+}
+.secondary-btn:hover { background-color: #3e3f42; }
+
+.logs-container {
+    background-color: #111214;
+    border-radius: 6px;
+    padding: 16px;
+    height: calc(100% - 46px); /* Ajustar para el título h2 */
+    overflow-y: auto;
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 13px;
+    line-height: 1.6;
+}
+
+.log-time { color: #888; margin-right: 12px; }
+.log-info { color: #60a5fa; }
+.log-success { color: var(--accent-green); }
+.log-warn { color: var(--accent-yellow); }
+.log-error { color: var(--accent-red); }

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>NextManager POS Agent</title>
+    <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline';">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <img src="../assets/icon.png" alt="Logo" class="logo">
+            <h1>Agente de Sincronización NextManager</h1>
+            <div class="status-indicator" id="status-indicator">
+                <span class="status-light grey"></span>
+                <span id="status-text">Desconectado</span>
+            </div>
+        </header>
+
+        <main>
+            <div class="config-section">
+                <h2>Configuración</h2>
+                <div class="input-group">
+                    <label for="api-key">Clave de Enlace (API Key)</label>
+                    <input type="password" id="api-key" placeholder="Pega la clave de enlace aquí...">
+                </div>
+                <button id="save-btn">Guardar y Conectar</button>
+            </div>
+
+            <div class="logs-section">
+                <h2>Registro de Actividad</h2>
+                <div id="logs-container" class="logs-container"></div>
+            </div>
+        </main>
+    </div>
+
+    <script src="renderer.js"></script>
+</body>
+</html>

@@ -12,6 +12,12 @@ jobs:
     # ¡La clave! Usamos una máquina virtual de Windows para la compilación
     runs-on: windows-latest
 
+    # CORRECCIÓN: Establece el directorio de trabajo por defecto para todos los pasos 'run'.
+    # Esto asegura que npm install se ejecute en la misma carpeta que package.json.
+    defaults:
+      run:
+        working-directory: .
+
     steps:
       # 1. Clona tu repositorio en la máquina virtual
       - name: Checkout repository
@@ -23,6 +29,7 @@ jobs:
         with:
           node-version: '18' # Puedes usar la versión de Node.js que prefieras
           cache: 'npm'
+          # Ya no necesitamos cache-dependency-path porque el directorio de trabajo es correcto
 
       # 3. Instala las dependencias de tu proyecto
       - name: Install dependencies

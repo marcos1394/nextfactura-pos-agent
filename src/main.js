@@ -158,7 +158,9 @@ ipcMain.handle('auto-detect-defaults', async (event) => {
         database: 'softrestaurant10',
         user: 'sa',
         password: 'National09', // La contraseña por defecto del manual
-        options: { trustServerCertificate: true },
+        options: { 
+            encrypt: true, // Forzar encriptación para compatibilidad
+            trustServerCertificate: true },
         requestTimeout: 5000 // Timeout corto para la prueba
     };
 

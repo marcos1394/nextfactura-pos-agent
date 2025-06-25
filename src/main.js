@@ -159,11 +159,8 @@ ipcMain.handle('auto-detect-defaults', async (event) => {
         user: 'sa',
         password: 'National09', // La contraseña por defecto del manual
         options: { 
-            encrypt: true, // Requerido para forzar la encriptación
-                trustServerCertificate: true, // Confiar en el certificado autofirmado del servidor
-                cryptoCredentialsDetails: {
-                    minVersion: 'TLSv1' // Forzar un protocolo compatible con SQL Server 2014
-                } },
+             encrypt: false, // Forzar conexión sin cifrado para máxima compatibilidad local
+                trustServerCertificate: true },
         requestTimeout: 5000 // Timeout corto para la prueba
     };
 

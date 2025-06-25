@@ -154,7 +154,7 @@ ipcMain.handle('test-pos-connection', async (event, posConfig) => {
 ipcMain.handle('auto-detect-defaults', async (event) => {
     logToUI('info', 'Intentando conexión con configuración por defecto de SoftRestaurant...');
     const defaultConfig = {
-        server: 'localhost\\SQLEXPRESS',
+        server: 'localhost\\NATIONALSOFT',
         database: 'softrestaurant10',
         user: 'sa',
         password: 'National09', // La contraseña por defecto del manual

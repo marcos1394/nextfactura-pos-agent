@@ -5,9 +5,10 @@
   "main": "src/main.js",
   "scripts": {
     "start": "electron .",
-    "package": "electron-builder"
+    "package": "electron-builder",
+    "package:win": "electron-builder --win"
   },
-  "author": "Marcos Sandoval",
+  "author": "Marcos [TU APELLIDO]",
   "license": "ISC",
   "devDependencies": {
     "electron": "^31.0.2",
@@ -22,7 +23,7 @@
     "appId": "com.nextmanager.pos-agent",
     "productName": "NextManager POS Agent",
     "win": {
-      "target": "nsis",
+      "target": "msi",
       "icon": "src/assets/icon.png"
     }
   }

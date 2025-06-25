@@ -5,9 +5,8 @@ const path = require('path');
 const Store = require('electron-store');
 const fetch = require('node-fetch');
 const sql = require('mssql');
-const fs = require('fs').promises; // Usamos fs.promises para I/O asíncrono
 
-
+// Almacenamiento persistente para la configuración
 const store = new Store();
 
 let mainWindow;
@@ -24,7 +23,7 @@ function createWindow() {
         },
         icon: path.join(__dirname, 'assets/icon.png'),
         title: "NextManager POS Agent",
-        frame: false, // Para una apariencia más moderna
+        frame: false,
         titleBarStyle: 'hidden',
         trafficLightPosition: { x: 15, y: 15 },
     });
@@ -33,13 +32,7 @@ function createWindow() {
     mainWindow.loadFile(path.join(__dirname, 'renderer/index.html'));
 }
 
-app.whenReady().then(() => {
-    createWindow();
-    app.on('activate', () => {
-        if (BrowserWindow.getAllWindows().length === 0) createWindow();
-    });
-});
-
+app.whenReady().then(createWindow);
 app.on('window-all-closed', () => {
     if (process.platform !== 'darwin') app.quit();
 });
@@ -63,17 +56,18 @@ async function startLongPolling(apiKey) {
 
     while (true) {
         if (signal.aborted) {
-            logToUI('warn', 'Conexión detenida por el usuario.');
+            logToUI('warn', 'La conexión fue detenida.');
             updateStatus('disconnected', 'Desconectado');
             break;
         }
 
         try {
-            const agentServiceUrl = store.get('agentServiceUrl', 'https://tu-api-gateway.com/api/agent-service');
+            const agentServiceUrl = store.get('agentServiceUrl', 'https://tu-api-gateway.com/api/agent-service'); // URL de tu backend
             const response = await fetch(`${agentServiceUrl}/listen`, {
                 method: 'GET',
                 headers: { 'Authorization': `Bearer ${apiKey}` },
-                signal
+                signal,
+                timeout: 60000 // Timeout de 60 segundos
             });
 
             if (response.status === 200) {
@@ -84,8 +78,8 @@ async function startLongPolling(apiKey) {
             } else if (response.status === 204) {
                 updateStatus('connected', 'Conectado. Esperando tareas...');
             } else {
-                const errorData = await response.text();
-                throw new Error(`Error del servidor: ${response.status} - ${errorData}`);
+                 const errorData = await response.text();
+                 throw new Error(`Error del servidor: ${response.status} - ${errorData}`);
             }
         } catch (error) {
             if (error.name === 'AbortError') break;
@@ -97,6 +91,7 @@ async function startLongPolling(apiKey) {
 }
 
 async function processTask(task, apiKey) {
+    logToUI('info', `Procesando tarea ${task.id}...`);
     let resultPayload = {};
     try {
         if (task.type === 'EXECUTE_QUERY') {
@@ -106,6 +101,7 @@ async function processTask(task, apiKey) {
             logToUI('info', `Conectando a la BD local: ${posConfig.server}...`);
             const pool = await sql.connect(posConfig);
             const queryResult = await pool.request().query(task.payload.query);
+            await pool.close();
             logToUI('success', `Consulta ejecutada. Filas devueltas: ${queryResult.recordset.length}`);
             resultPayload = { success: true, data: queryResult.recordset };
         } else {
@@ -124,46 +120,7 @@ async function processTask(task, apiKey) {
     }
 }
 
-// --- NUEVO: Lógica de Autodetección ---
-async function autoDetectPosConfig() {
-    // Esta función busca en rutas comunes el archivo de configuración de SoftRestaurant.
-    // La ruta exacta puede variar según la versión del software.
-    const commonPaths = [
-        'C:/Program Files (x86)/SoftRestaurant/SoftRestaurant10.0/sr.config',
-        'C:/Program Files (x86)/SoftRestaurant/SoftRestaurant9.5/sr.config',
-        'C:/SoftRestaurant/sr.config'
-    ];
-
-    for (const configPath of commonPaths) {
-        try {
-            await fs.access(configPath); // Verifica si el archivo existe
-            logToUI('info', `Archivo de configuración encontrado en: ${configPath}`);
-            const fileContent = await fs.readFile(configPath, 'utf8');
-            
-            // Lógica para parsear el archivo de configuración (puede ser XML, INI, etc.)
-            // Esto es un EJEMPLO para un formato tipo "KEY=VALUE"
-            const config = {};
-            const lines = fileContent.split('\n');
-            lines.forEach(line => {
-                if (line.includes('DataSource')) config.server = line.split('=')[1].trim();
-                if (line.includes('InitialCatalog')) config.database = line.split('=')[1].trim();
-                if (line.includes('UserID')) config.user = line.split('=')[1].trim();
-            });
-
-            if (config.server && config.database && config.user) {
-                return { success: true, config };
-            }
-
-        } catch (error) {
-            // El archivo no existe en esta ruta, continúa con la siguiente.
-        }
-    }
-    // Si el bucle termina sin encontrar nada
-    return { success: false, error: 'No se encontró el archivo de configuración de SoftRestaurant.' };
-}
-
-
-// --- IPC Handlers ---
+// --- IPC Handlers (Comunicación con la Interfaz) ---
 
 ipcMain.on('save-settings', (event, { apiKey, posConfig }) => {
     store.set('apiKey', apiKey);
@@ -181,15 +138,38 @@ ipcMain.on('get-initial-data', (event) => {
     });
 });
 
-ipcMain.on('test-pos-connection', async (event, posConfig) => {
+ipcMain.handle('test-pos-connection', async (event, posConfig) => {
     try {
         logToUI('info', `Probando conexión a ${posConfig.server}...`);
         const pool = await sql.connect(posConfig);
         await pool.close();
-        logToUI('success', '¡Conexión a la base de datos del POS exitosa!');
-        event.reply('test-pos-connection-result', { success: true });
+        return { success: true };
     } catch (error) {
         logToUI('error', `Fallo en la conexión al POS: ${error.message}`);
-        event.reply('test-pos-connection-result', { success: false, error: error.message });
+        return { success: false, error: error.message };
+    }
+});
+
+// Lógica de Autodetección que intenta la conexión con valores por defecto
+ipcMain.handle('auto-detect-defaults', async (event) => {
+    logToUI('info', 'Intentando conexión con configuración por defecto de SoftRestaurant...');
+    const defaultConfig = {
+        server: 'localhost\\SQLEXPRESS',
+        database: 'softrestaurant10',
+        user: 'sa',
+        password: 'National09', // La contraseña por defecto del manual
+        options: { trustServerCertificate: true },
+        requestTimeout: 5000 // Timeout corto para la prueba
+    };
+
+    try {
+        const pool = await sql.connect(defaultConfig);
+        await pool.close();
+        logToUI('success', '¡Conexión por defecto exitosa! Rellenando campos.');
+        // No devolvemos la contraseña por seguridad
+        return { success: true, config: { server: defaultConfig.server, database: defaultConfig.database, user: defaultConfig.user } };
+    } catch (error) {
+        logToUI('warn', `La conexión con valores por defecto falló: ${error.message}. Por favor, verifique la configuración manualmente.`);
+        return { success: false, error: error.message };
     }
 });

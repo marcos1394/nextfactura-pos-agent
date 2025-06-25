@@ -138,10 +138,22 @@ ipcMain.on('get-initial-data', (event) => {
     });
 });
 
+// Este es el método que se ejecuta al presionar "Probar Conexión"
 ipcMain.handle('test-pos-connection', async (event, posConfig) => {
     try {
         logToUI('info', `Probando conexión a ${posConfig.server}...`);
-        const pool = await sql.connect(posConfig);
+        
+        // --- CORRECCIÓN DEFINITIVA APLICADA AQUÍ ---
+        // Se asegura de usar la configuración correcta que resuelve el error de protocolo.
+        const configWithTrust = {
+            ...posConfig,
+            options: {
+                ...posConfig.options,
+                encrypt: false, // Forzar conexión sin cifrado para máxima compatibilidad local
+                trustServerCertificate: true,
+            }
+        };
+        const pool = await sql.connect(configWithTrust);
         await pool.close();
         return { success: true };
     } catch (error) {
@@ -149,6 +161,7 @@ ipcMain.handle('test-pos-connection', async (event, posConfig) => {
         return { success: false, error: error.message };
     }
 });
+
 
 // Lógica de Autodetección que intenta la conexión con valores por defecto
 ipcMain.handle('auto-detect-defaults', async (event) => {

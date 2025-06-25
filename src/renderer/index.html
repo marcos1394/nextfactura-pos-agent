@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>NextManager POS Agent</title>
+    <meta http-equiv="Content-Security-Policy" content="script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com;">
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header class="title-bar">
+            <div class="title-bar-logo">
+                <img src="../assets/icon.png" alt="Logo" class="logo">
+                <h1>NextManager POS Agent</h1>
+            </div>
+        </header>
+        
+        <div class="status-banner">
+            <div class="status-indicator" id="status-indicator">
+                <span class="status-light grey" id="status-light"></span>
+                <span id="status-text">Inicializando...</span>
+            </div>
+        </div>
+
+        <main class="content">
+            <div class="config-panel">
+                <h2>Configuración</h2>
+                <div class="form-section">
+                    <h3>Paso 1: Conexión a la Plataforma</h3>
+                    <div class="input-group">
+                        <label for="api-key">Clave de Enlace (API Key)</label>
+                        <input type="password" id="api-key" placeholder="Pega la clave de enlace aquí...">
+                    </div>
+                </div>
+                <div class="form-section">
+                    <h3>Paso 2: Conexión a SoftRestaurant®</h3>
+                    <button id="detect-btn" class="secondary-btn full-width-btn">Intentar Detección Automática</button>
+                    <div class="input-group">
+                        <label for="pos-server">Servidor (Host o IP)</label>
+                        <input type="text" id="pos-server" placeholder="ej. localhost\\SQLEXPRESS">
+                    </div>
+                    <div class="input-group">
+                        <label for="pos-db">Nombre de la Base de Datos</label>
+                        <input type="text" id="pos-db" placeholder="ej. softrestaurant10">
+                    </div>
+                    <div class="input-group">
+                        <label for="pos-user">Usuario de la Base de Datos</label>
+                        <input type="text" id="pos-user" placeholder="ej. sa">
+                    </div>
+                    <div class="input-group">
+                        <label for="pos-pass">Contraseña de la Base de Datos</label>
+                        <input type="password" id="pos-pass" placeholder="Por defecto: National09">
+                    </div>
+                    <button id="test-btn" class="secondary-btn full-width-btn">Probar Conexión a Base de Datos</button>
+                </div>
+                <button id="save-btn" class="primary-btn full-width-btn">Paso 3: Guardar y Conectar</button>
+            </div>
+
+            <div class="logs-panel">
+                <h2>Registro de Actividad</h2>
+                <div id="logs-container" class="logs-container"></div>
+            </div>
+        </main>
+    </div>
+    <script src="renderer.js"></script>
+</body>
+</html>

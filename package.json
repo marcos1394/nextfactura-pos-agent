@@ -5,9 +5,10 @@
   "main": "src/main.js",
   "scripts": {
     "start": "electron .",
-    "package": "electron-builder"
+    "package": "electron-builder",
+    "package:win": "electron-builder --win"
   },
-  "author": "Marcos Sandoval",
+  "author": "Marcos [TU APELLIDO]",
   "license": "ISC",
   "devDependencies": {
     "electron": "^31.0.2",
@@ -16,8 +17,7 @@
   "dependencies": {
     "electron-store": "^8.2.0",
     "mssql": "^10.0.2",
-    "node-fetch": "^2.7.0",
-    "node-powershell": "^5.0.1"
+    "node-fetch": "^2.7.0"
   },
   "build": {
     "appId": "com.nextmanager.pos-agent",
@@ -25,12 +25,6 @@
     "win": {
       "target": "msi",
       "icon": "src/assets/icon.png"
-    },
-    "nsis": {
-      "oneClick": false,
-      "allowToChangeInstallationDirectory": true,
-      "createDesktopShortcut": true,
-      "runAfterFinish": true
     }
   }
 }

@@ -8,7 +8,7 @@
     "package": "electron-builder",
     "package:win": "electron-builder --win"
   },
-  "author": "Marcos Sandoval",
+  "author": "Marcos [TU APELLIDO]",
   "license": "ISC",
   "devDependencies": {
     "electron": "^31.0.2",

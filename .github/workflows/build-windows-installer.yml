@@ -1,29 +1,38 @@
+# .github/workflows/build-windows-installer.yml
+
 name: Build Windows Installer
 
+# Esto hace que el workflow se ejecute cada vez que subes cambios a la rama 'main'
 on:
   push:
     branches: [ "main" ]
 
 jobs:
   build:
+    # ¡La clave! Usamos una máquina virtual de Windows para la compilación
     runs-on: windows-latest
 
     steps:
+      # 1. Clona tu repositorio en la máquina virtual
       - name: Checkout repository
         uses: actions/checkout@v4
 
+      # 2. Configura el entorno de Node.js
       - name: Setup Node.js
         uses: actions/setup-node@v4
         with:
-          node-version: '18'
+          node-version: '18' # Puedes usar la versión de Node.js que prefieras
           cache: 'npm'
 
+      # 3. Instala las dependencias de tu proyecto
       - name: Install dependencies
         run: npm install
 
+      # 4. Ejecuta el script para construir el instalador .msi
       - name: Build Windows Installer
         run: npm run package:win
 
+      # 5. Sube el instalador generado como un "artefacto"
       - name: Upload Installer Artifact
         uses: actions/upload-artifact@v4
         with:

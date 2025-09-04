@@ -11,7 +11,7 @@
   "author": "Marcos [TU APELLIDO]",
   "license": "ISC",
   "devDependencies": {
-    "electron": "^31.0.2",
+    "electron": "^35.7.5",
     "electron-builder": "^24.13.3"
   },
   "dependencies": {
